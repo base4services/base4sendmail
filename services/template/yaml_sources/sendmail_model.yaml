@@ -1,0 +1,68 @@
+option:
+
+  __meta:
+
+    table_name: sendmail_options
+    app: sendmail
+
+  key:
+    field: "fields.CharField(255, null=False, unique=True)"
+
+  value:
+    field: "fields.TextField(null=True)"
+
+template:
+
+  __meta:
+
+    table_name: sendmail_templates
+    app: sendmail
+
+  code:
+    field: "fields.CharField(255, null=False, unique=True)"
+
+  name:
+    field: "fields.CharField(255, null=False)"
+
+  subject:
+    field: "fields.CharField(255, null=False, unique=True)"
+
+  body:
+    field: "fields.TextField(null=False)"
+
+  variables:
+    field: "fields.JSONField(null=False)"
+
+
+mailqueue:
+
+  __meta:
+
+    table_name: sendmail_mailqueue
+    app: sendmail
+
+  sender:
+    field: "fields.CharField(255, null=False)"
+
+  reply_to:
+    field: "fields.CharField(255, null=True)"
+
+  to:
+    field: "fields.JSONField(null=False)"
+
+  cc:
+    field: "fields.JSONField(null=True)"
+
+  bcc:
+    field: "fields.JSONField(null=True)"
+
+  subject:
+    field: "fields.CharField(255, null=True)"
+
+  body:
+    field: "fields.TextField(null=True)"
+
+  template:
+    field: "fields.ForeignKeyField('sendmail.Template', null=True,
+    index=True, on_delete=tortoise.fields.base.OnDelete.RESTRICT, 
+    related_name='mailqueue')"

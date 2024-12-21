@@ -1,0 +1,70 @@
+option:
+
+  __schemas:
+    all: OptionSchema
+
+  key:
+    mandatory: true
+    type: str
+
+  value:
+    mandatory: true
+    type: str
+
+template:
+  
+  __schemas:
+    all: TemplateSchema
+  
+  code:
+    mandatory: true
+    type: str
+  
+  name:
+    mandatory: true
+    type: str
+  
+  subject:
+    mandatory: true
+    type: str
+  
+  body:
+    mandatory: true
+    type: str
+  
+  variables:
+    mandatory: true
+    type: dict
+
+mailqueue:
+  
+  __schemas:
+    all: MailQueueSchema
+  
+  sender:
+    mandatory: true
+    type: str
+  
+  reply_to:
+    mandatory: true
+    type: str
+  
+  to:
+    mandatory: true
+    type: list
+  
+  cc:
+    mandatory: false
+    type: list
+  
+  bcc:
+    mandatory: false
+    type: list
+  
+  subject:
+    mandatory: true
+    type: str
+    
+  template:
+    mandatory: false
+    type: TemplateSchema
