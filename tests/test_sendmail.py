@@ -1,8 +1,14 @@
+import os
+import time
+
+import requests
+
 from pydantic import EmailStr, NameEmail
 from services.sendmail.schemas.sendmail import EnqueueResponse
+
+current_file_path = os.path.abspath(os.path.dirname(__file__))
 from .test_base_tenants import TestBaseTenantsAPIV2
 
-from shared.services.sendmail.test import enable_emailing_in_test_mode
 
 class TestSVC(TestBaseTenantsAPIV2):
     services = ['tenants', 'sendmail']
@@ -11,7 +17,7 @@ class TestSVC(TestBaseTenantsAPIV2):
         await super().setup()
 
     async def test_is_sendmail_healthy(self):
-        response = await self.request(method='get', url="/api/sendmail/healthy")
+        response = await self.request(method='get', url="/api/sendmail/healthy", headers={'X-Tenant-ID': 'pass'})
         assert response.status_code == 200
 
     # @enable_emailing_in_test_mode

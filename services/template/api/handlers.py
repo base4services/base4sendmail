@@ -1,13 +1,17 @@
-
+import os
+import datetime
+from typing import Dict
 from base4.utilities.service.base import api, route
 from base4.utilities.service.base import BaseAPIHandler
 from fastapi import Request, APIRouter
 from services.sendmail.services.sendmail import SendmailService
 import base4.service.exceptions
 
+router = APIRouter()
+
 from shared.services.sendmail.schemas.email_schema import EmailRequest
 
-@route(router=APIRouter(), prefix='/api/sendmail')
+@route(router=router, prefix='/api/sendmail')
 class SendMailAPIHandler(BaseAPIHandler):
 
     def __init__(self, router):
@@ -16,6 +20,7 @@ class SendMailAPIHandler(BaseAPIHandler):
         super().__init__(router)
 
     @api(
+        is_public=False,
         method='POST',
         path='/enqueue',
     )
@@ -23,14 +28,16 @@ class SendMailAPIHandler(BaseAPIHandler):
 
         try:
             return await self.service.enqueue(request, data)
+
         except base4.service.exceptions.ServiceException as se:
             raise se.make_http_exception()
+
         except Exception as e:
-            raise base4.service.exceptions.HTTPException(500,
-                                                         detail={'code': 'INTERNAL_SERVER_ERROR', 'message': str(e)})
+            raise base4.service.exceptions.HTTPException(500,  detail={'code': 'INTERNAL_SERVER_ERROR', 'message': str(e)})
 
 
     @api(
+        is_public=False,
         method='POST',
         path='/send-next',
     )
