@@ -64,5 +64,5 @@ mailqueue:
 
   template:
     field: "fields.ForeignKeyField('sendmail.Template', null=True,
-    index=True, on_delete=tortoise.fields.base.OnDelete.RESTRICT, 
+   db_index=True, on_delete=tortoise.fields.base.OnDelete.RESTRICT, 
     related_name='mailqueue')"

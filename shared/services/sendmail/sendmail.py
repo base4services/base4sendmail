@@ -8,6 +8,11 @@ from base4.utilities.db.async_redis import get_redis
 from pydantic import BaseModel, EmailStr, NameEmail
 from shared.services.sendmail.schemas.email_schema import EmailRequest
 
+import dotenv
+from base4.utilities.files import get_project_root
+dotenv.load_dotenv(get_project_root() / '.env')
+
+
 async def smtp_connect_and_send_message(message):
 
     SMTP_SERVER = os.getenv('SERVICES_SENDMAIL_SMTP_HOST')
@@ -73,7 +78,7 @@ async def enqueue_to_redis(email_request: EmailRequest):
 async def main():
 
     await enqueue_to_redis(EmailRequest(
-        sender=NameEmail(name='Igor Jeremic',email='info@digitalcube.rs'),
+        sender=NameEmail(name=os.getenv('app_name', ''),email='do-not-reply@digitalcube.rs'),
         to=[NameEmail(name='Igor Jeremic',email='igor@digitalcube.rs')],
         subject='Test Subject',
         body='Test Body'))
@@ -82,10 +87,4 @@ async def main():
 
 
 if __name__=='__main__':
-
-    from  base4.utilities.files import env
-    import dotenv
-
-    dotenv.load_dotenv(env())
-
     asyncio.run(main())
