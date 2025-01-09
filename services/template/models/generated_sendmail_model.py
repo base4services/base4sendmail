@@ -71,7 +71,7 @@ class Mailqueue(Base, Model):
     bcc = fields.JSONField(null=True)
     subject = fields.CharField(255, null=True)
     body = fields.TextField(null=True)
-    template = fields.ForeignKeyField('sendmail.Template', null=True, index=True, on_delete=tortoise.fields.base.OnDelete.RESTRICT, related_name='mailqueue')
+    template = fields.ForeignKeyField('sendmail.Template', null=True, db_index=True, on_delete=tortoise.fields.base.OnDelete.RESTRICT, related_name='mailqueue')
 
     mk_cache_rules = []
 
