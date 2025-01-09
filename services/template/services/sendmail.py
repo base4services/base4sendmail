@@ -1,5 +1,7 @@
 from typing import Dict
 from urllib.request import Request
+
+from base4.service.base_service_v2 import BaseServiceV2
 from base4.service.exceptions import ServiceException
 
 from base4.service.base import BaseService
@@ -16,6 +18,19 @@ from ._db_conn import get_conn_name
 from ...tenants.services import default_id_user
 
 
+# class SendmailService(BaseServiceV2[models.Mailqueue]):
+#     def __init__(self, request: Request):
+#         self.me = request.me
+#
+#         super().__init__(
+#             schema=schemas.MailQueueSchema,
+#             model=models.Mailqueue,
+#             conn_name=get_conn_name(),
+#             c11=None,
+#             c1n=None,
+#             uid_prefix='M',
+#             uid_total_length=12
+#         )
 class SendmailService(BaseService[models.Mailqueue]):
     def __init__(self):
         super().__init__(schemas.MailQueueSchema, models.Mailqueue, get_conn_name())
@@ -24,14 +39,10 @@ class SendmailService(BaseService[models.Mailqueue]):
 
         from shared.services.sendmail.sendmail import smtp_connect_and_send_message
 
-        async with get_redis() as redis:
-            email = await redis.lpop('mailqueue')
-            if not email:
-                raise ServiceException('NO_EMAIL', 'No Email to be sent', 404)
-
-            res = await smtp_connect_and_send_message(email['mime'])
-
-            ...
+        email = await self.rdb.lpop('mailqueue')
+        if not email:
+            raise ServiceException('NO_EMAIL', 'No Email to be sent', 404)
+        await smtp_connect_and_send_message(email['mime'])
 
         return schemas.SendNextResponse(
             id=email['id'],

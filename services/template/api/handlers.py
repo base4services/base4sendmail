@@ -1,8 +1,4 @@
-import os
-import datetime
-from typing import Dict
-from base4.utilities.service.base import api, route
-from base4.utilities.service.base import BaseAPIHandler
+from base4.utilities.service.base import api, route, BaseAPIHandler
 from fastapi import Request, APIRouter
 from services.sendmail.services.sendmail import SendmailService
 import base4.service.exceptions
@@ -15,9 +11,8 @@ from shared.services.sendmail.schemas.email_schema import EmailRequest
 class SendMailAPIHandler(BaseAPIHandler):
 
     def __init__(self, router):
+        super().__init__(router, service=SendmailService(), schema=EmailRequest, model=None)
 
-        self.service = SendmailService()
-        super().__init__(router)
 
     @api(
         is_public=False,
@@ -27,7 +22,7 @@ class SendMailAPIHandler(BaseAPIHandler):
     async def enqueue(self, request: Request, data: EmailRequest): # -> EnqueueResponse
 
         try:
-            return await self.service.enqueue(request, data)
+            return await self.service.enqueue(request, email_request=data)
 
         except base4.service.exceptions.ServiceException as se:
             raise se.make_http_exception()
